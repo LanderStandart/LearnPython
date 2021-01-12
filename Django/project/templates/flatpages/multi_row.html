@@ -1,0 +1,15 @@
+{% extends 'flatpages/default.html' %}
+  <!-- Page Content -->
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12 text-center">
+       {% block content %}
+       {{ flatpage.content }}
+       <br>   {{ flatpage.content }}
+       {% endblock content %}
+      </div>
+    </div>
+  </div>
+
+
+
