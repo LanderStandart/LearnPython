@@ -11,8 +11,10 @@
 {% block content %}
 <h1>Все новости  ({{posts|length}})</h1>
 <hr>
-
-
+<form method="GET">
+    {{ filter.form }} <!-- Форму от фильтров за нас сделает django. А вот кнопку, увы придётся делать самому -->
+    <input type="submit" value="Найти">
+</form>
 <table>
     <tr>
         <td>
@@ -24,28 +26,17 @@
         <td>
             Содержание
         </td>
-        <td>
-            Автор
-        </td>
     </tr>
-
-    {% for post in posts %}
+    {% for post in filter.qs %}
     <tr>
         <td>
-            <a href="{% url 'post_detail' post.id %}">
-            {{post.caption|censor }} </a>
-                <a href="{% url 'edit_post' post.id %}"><u>Редактировать</u></a> <!-- добавим ссылку на редактирование товара-->
-
-            <a href="{% url 'delete_post' post.id %}"><u> Удалить </u></a>
+            {{post.caption|censor }}
         </td>
         <td>
-            {{post.insertdt|date:'Y m d'}}
+            {{post.insertdt|date:'Y M d'}}
         </td>
         <td>
             {{post.text|truncatechars:50|censor}}
-        </td>
-        <td>
-            {{post.author_id}}
         </td>
     </tr>
     {% endfor %}
@@ -75,7 +66,4 @@
     {% endif %}
 
 {% endif %}
-
-
-
 {% endblock content %}
