@@ -1,4 +1,6 @@
-from django.views.generic import ListView,DetailView,UpdateView,DeleteView
+from django.views.generic import ListView,DetailView,UpdateView,DeleteView,TemplateView
+from django.views.generic.edit import CreateView
+from django.contrib.auth.mixins import LoginRequiredMixin,PermissionRequiredMixin
 from .models import Post,Category
 from django.shortcuts import render
 from django.core.paginator import Paginator
@@ -31,11 +33,12 @@ class SearchList(ListView):
         context = super().get_context_data(**kwargs)
         context['filter'] = PostFilter(self.request.GET,queryset=self.get_queryset())
         return context
-class CreatePost(ListView):
+class CreatePost(PermissionRequiredMixin,CreateView):
     model = Post
     template_name = 'create_post.html'
     context_object_name = 'posts'
     form_class=PostForm
+    permission_required = ('news.add_post',)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -49,9 +52,10 @@ class CreatePost(ListView):
             form.save()
         return super().get(request, *args, **kwargs)
 
-class PostUpdate(UpdateView):
+class PostUpdate(PermissionRequiredMixin,UpdateView):
     template_name = 'create_post.html'
     form_class = PostForm
+    permission_required = ('news.change_post',)
     def get_object(self, **kwargs):
         id = self.kwargs.get('pk')
         return Post.objects.get(pk=id)
@@ -60,3 +64,12 @@ class PostDeleteView(DeleteView):
     template_name = 'delete_post.html'
     queryset = Post.objects.all()
     success_url='/posts/'
+
+
+class IndexView(LoginRequiredMixin, TemplateView):
+    template_name = 'protect/index.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['is_not_author'] = not self.request.user.groups.filter(name='author').exists()
+        return context

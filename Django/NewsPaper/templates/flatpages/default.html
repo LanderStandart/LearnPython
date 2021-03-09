@@ -9,7 +9,7 @@
   <meta name="description" content="">
   <meta name="author" content="">
 
-  <title>Django flatpages — {% block title %} {% endblock title %}</title>
+  <title>Django flatpages1 — {% block title %} {% endblock title %}</title>
 
   <!-- Bootstrap core CSS -->
   <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
@@ -21,7 +21,7 @@
   <!-- Navigation -->
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark static-top">
     <div class="container">
-      <a class="navbar-brand" href="#">Django flatpages</a>
+      <a class="navbar-brand" href="#">Django flatpages {{request.user.username}}</a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -40,6 +40,10 @@
           </li>
                     <li class="nav-item">
             <a class="nav-link" href="/posts/search/">Поиск</a>
+          </li>
+          </li>
+                    <li class="nav-item">
+            <a class="nav-link" href="/admin/logout/">Выход</a>
           </li>
         </ul>
       </div>
