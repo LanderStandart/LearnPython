@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'django_filters',
     'allauth',
     'allauth.account',
+    'django_apscheduler',
     'allauth.socialaccount',
     # ... include the providers you want to enable:
     'allauth.socialaccount.providers.google',
@@ -145,9 +146,23 @@ STATIC_URL = '/static/'
 LOGIN_URL='/accounts/login/'
 LOGIN_REDIRECT_URL = '/posts/'
 
-ACCOUNT_EMAIL_REQUIRED = False
+ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_UNIQUE_EMAIL = True
 ACCOUNT_USERNAME_REQUIRED = True
 ACCOUNT_AUTHENTICATION_METHOD = 'username'
-ACCOUNT_EMAIL_VERIFICATION = 'none'
+ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 ACCOUNT_FORMS = {'signup': 'news.forms.BasicSignupForm'}
+
+EMAIL_HOST = 'smtp.yandex.ru' # адрес сервера Яндекс-почты для всех один и тот же
+EMAIL_PORT = 465 # порт smtp сервера тоже одинаковый
+EMAIL_HOST_USER = 'landerneo' # ваше имя пользователя, например если ваша почта user@yandex.ru, то сюда надо писать user, иными словами, это всё то что идёт до собаки
+EMAIL_HOST_PASSWORD = 'Lkdi37djdLkdi37djd' # пароль от почты
+EMAIL_USE_SSL = True # Яндекс использует ssl, подробнее о том, что это, почитайте на Википедии, но включать его здесь обязательно
+
+DEFAULT_FROM_EMAIL = 'landerneo@yandex.ru'
+
+# формат даты, которую будет воспрнимать наш задачник(вспоминаем урок по фильтрам)
+APSCHEDULER_DATETIME_FORMAT = "N j, Y, f:s a"
+
+# если задача не выполняется за 25 секунд, то она автоматически снимается, можете поставить время побольше, но как правило, это сильно бьёт по производительности сервера
+APSCHEDULER_RUN_NOW_TIMEOUT = 25  # Seconds

@@ -11,5 +11,7 @@
 <h1>{{ post.caption}}</h1>
 {{post.text }}<br>
 {{post.insertdt|date:'d-N-Y H:i'}}
+Category:
+{{post.category_id.postcategory}}
 
 {% endblock content %}

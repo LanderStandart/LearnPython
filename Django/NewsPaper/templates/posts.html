@@ -9,9 +9,21 @@
 
 <!-- В контенте на странице мы выводим все товары -->
 {% block content %}
-<h1>Все новости  ({{posts|length}})</h1>
+<h1>Все новости  ({{posts|length}}) {{cuser}}</h1>
 <hr>
+{% for i in category %}
 
+<a href="{{ i.get_absolute_url }}" class="btn btn-primary btn-sm">{{ i }}</a>
+{% endfor %}
+
+{% if categoryid %}
+<p><a href="{{ categoryid.subscribe }}" class="btn btn-warning btn-sm">
+    подписаться</a> на категорию - {{ categoryid }} </p>
+{% endif %}
+
+{% if categoryidbed %}
+<p><a href="{{ categoryidbed.subscribebed }}" class="btn btn-warning">отписаться</a> на категорию - {{ categoryidbed }} </p>
+{% endif %}
 
 <table>
     <tr>
@@ -26,6 +38,9 @@
         </td>
         <td>
             Автор
+        </td>
+        <td>
+            Категория
         </td>
     </tr>
 
@@ -46,6 +61,9 @@
         </td>
         <td>
             {{post.author_id}}
+        </td>
+        <td>
+           {{categoryid1}}
         </td>
     </tr>
     {% endfor %}
