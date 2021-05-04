@@ -1,6 +1,7 @@
 from django.db import models
 from django.conf import settings
 from django.urls import reverse
+from django.core.cache import cache
 
 class Author(models.Model):
     user_id = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,verbose_name='Автор')
@@ -58,6 +59,10 @@ class Post(models.Model):
 
     def get_absolute_url(self):
         return f'/posts/{self.id}'
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs) # сначала вызываем метод родителя, чтобы объект сохранился
+        cache.delete(f'post-{self.pk}')
 
 class PostCategory(models.Model):
     post_id =models.ForeignKey(Post,on_delete=models.CASCADE)
