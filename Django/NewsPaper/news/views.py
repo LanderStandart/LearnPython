@@ -14,6 +14,7 @@ from django.db.models.signals import m2m_changed,pre_save
 from django.dispatch import receiver
 from django.db import models
 from datetime import date
+from .tasks import send_post_sub,send_news_review
 
 today = date.today()
 
@@ -107,34 +108,34 @@ class CreatePost(PermissionRequiredMixin,CreateView):
     def post(self, request, *args, **kwargs):
         form = self.form_class(request.POST)
         if form.is_valid():
-            form.save()
+            tas =form.save()
 
         post = request.POST
         #sendmail
         allPOST = Post.objects.filter(insertdt__contains=today,author_id=request.POST['author_id']).count()
-        if allPOST>3:
+        if allPOST>10:
             print('Hvatit')
             return redirect(f'/posts/stopadd')
-
-
-        cat = Category.objects.get(id=request.POST['category_id'])
-        q = cat.subscribers.all()
-
-        for mail in q:
-            html_content = render_to_string(
-                'newpost_mail.html', {
-                    'post': post,
-                    'user':mail.username
-                }
-            )
-
-            msg = EmailMultiAlternatives(
-                subject=post['caption'],
-                body=post['text'],
-                from_email='landerneo@yandex.ru',
-                to=[mail.email]
-            )
-            msg.attach_alternative(html_content,"text/html")
+        send_post_sub(request.POST['category_id'],tas.pk)
+        #print(tas.pk)
+        # cat = Category.objects.get(id=request.POST['category_id'])
+        # q = cat.subscribers.all()
+        #
+        # for mail in q:
+        #     html_content = render_to_string(
+        #         'newpost_mail.html', {
+        #             'post': post,
+        #             'user':mail.username
+        #         }
+        #     )
+        #
+        #     msg = EmailMultiAlternatives(
+        #         subject=post['caption'],
+        #         body=post['text'],
+        #         from_email='landerneo@yandex.ru',
+        #         to=[mail.email]
+        #     )
+        #     msg.attach_alternative(html_content,"text/html")
             #msg.send()
             # send_mail(
             #     subject=request.POST['caption'],
